@@ -1,0 +1,6 @@
+armani_defconfig = Lenovo a706
+audi_defconfig = Lenovo a760
+
+Build:
+make armani_defconfig or make audi_defconfig
+make CROSS_COMPILE=шлях до вашого тулчайну -j3
