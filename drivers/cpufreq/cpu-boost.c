@@ -55,7 +55,7 @@ module_param(sync_threshold, uint, 0644);
 static unsigned int input_boost_freq;
 module_param(input_boost_freq, uint, 0644);
 
-static unsigned int input_boost_ms = 40;
+static unsigned int input_boost_ms = 60;
 module_param(input_boost_ms, uint, 0644);
 
 static u64 last_input_time;
@@ -220,6 +220,16 @@ static void cpuboost_input_event(struct input_handle *handle,
 
 	queue_work(cpu_boost_wq, &input_boost_work);
 	last_input_time = ktime_to_us(ktime_get());
+}
+
+bool check_cpuboost(int cpu)		
+{		
+	struct cpu_sync *i_sync_info;		
+	i_sync_info = &per_cpu(sync_info, cpu);		
+		
+	if (i_sync_info->input_boost_min > 0)		
+		return true;		
+	return false;		
 }
 
 static int cpuboost_input_connect(struct input_handler *handler,

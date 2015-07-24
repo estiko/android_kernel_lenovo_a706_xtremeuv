@@ -39,8 +39,8 @@
 #define DEF_FREQUENCY_UP_THRESHOLD		(80)
 #define DEF_SAMPLING_DOWN_FACTOR		(1)
 #define MAX_SAMPLING_DOWN_FACTOR		(100000)
-#define MICRO_FREQUENCY_DOWN_DIFFERENTIAL	(3)
-#define MICRO_FREQUENCY_UP_THRESHOLD		(95)
+#define MICRO_FREQUENCY_DOWN_DIFFERENTIAL	(4)
+#define MICRO_FREQUENCY_UP_THRESHOLD		(90)
 #define MICRO_FREQUENCY_MIN_SAMPLE_RATE		(10000)
 #define MIN_FREQUENCY_UP_THRESHOLD		(11)
 #define MAX_FREQUENCY_UP_THRESHOLD		(100)
@@ -639,6 +639,8 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 
 	this_dbs_info->freq_lo = 0;
 	policy = this_dbs_info->cur_policy;
+	if(policy == NULL)
+		return;
 
 	/*
 	 * Every sampling_rate, we check, if current idle time is less
@@ -712,6 +714,9 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		cur_load = 100 * (wall_time - idle_time) / wall_time;
 
 		freq_avg = __cpufreq_driver_getavg(policy, j);
+		if(policy == NULL)
+		return;
+
 		if (freq_avg <= 0)
 			freq_avg = policy->cur;
 
@@ -1065,6 +1070,11 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 
 	case CPUFREQ_GOV_LIMITS:
 		mutex_lock(&this_dbs_info->timer_mutex);
+		if (!this_dbs_info->cur_policy) {
+			 pr_err("Dbs policy is NULL\n");
+			 mutex_unlock(&this_dbs_info->timer_mutex);
+	 		 return -EINVAL;
+		}
 		if (policy->max < this_dbs_info->cur_policy->cur)
 			__cpufreq_driver_target(this_dbs_info->cur_policy,
 				policy->max, CPUFREQ_RELATION_H);
