@@ -228,6 +228,23 @@ config CPU_FREQ_DEFAULT_GOV_WHEATLEY
 	help
 	  Use the CPUFreq governor 'wheatley' as default.
 
+config CPU_FREQ_DEFAULT_GOV_LULZACTIVEW
+	bool "lulzactivew"
+	select CPU_FREQ_GOV_LULZACTIVEW
+	select CPU_FREQ_GOV_PERFORMANCE
+	help
+	  Use the CPUFreq governor 'lulzactivew' as default.
+
+config CPU_FREQ_DEFAULT_GOV_SKYWALKER
+	bool "skywalker"
+	select CPU_FREQ_GOV_SKYWALKER
+	help
+
+config CPU_FREQ_DEFAULT_GOV_INTERACTIVEX2
+	bool "interactivex2"
+	select CPU_FREQ_GOV_INTERACTIVEX2
+	help
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -604,6 +621,23 @@ config CPU_FREQ_GOV_LULZACTIVE
 config CPU_FREQ_GOV_WHEATLEY
 	tristate "'wheatley' cpufreq governor"
 	depends on CPU_FREQ
+
+config CPU_FREQ_GOV_LULZACTIVEW
+	tristate "'lulzactivew' cpufreq governor"
+	depends on CPU_FREQ
+	help
+	  'lulzactivew' - a new interactive governor by Tegrak!
+
+	  If in doubt, say N.
+
+config CPU_FREQ_GOV_SKYWALKER
+	tristate "'skywalker' cpufreq governor"
+	depends on CPU_FREQ
+
+config CPU_FREQ_GOV_INTERACTIVEX2
+	tristate "'interactivex2' cpufreq governor"
+	depends on CPU_FREQ
+
 
 menu "x86 CPU frequency scaling drivers"
 depends on X86
